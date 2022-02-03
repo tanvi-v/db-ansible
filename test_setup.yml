@@ -1,0 +1,14 @@
+
+- name: 'Basic Test'
+  hosts: 'localhost'
+
+  tasks:
+
+    - assert: { that: hostgroup is defined and exadata_type is defined }
+    
+    - name: 'Basic VM Cluster Check'
+      include_role:
+        name: 'exadata'
+        tasks_from: '{{ exadata_type }}_vm_cluster_discovery.yml'
+    
+  

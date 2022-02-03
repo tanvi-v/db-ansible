@@ -1,0 +1,20 @@
+# The db_home_create playbook calls the main.yml file in the database_home role to create a new 
+# database home using the oci ansible module. Assumes that the VM cluster has already been created
+# and the ansible host has ssh access to the cluster. 
+
+- name: 'Database Home Set-Up'
+  hosts: 'localhost'
+    
+  tasks:
+    
+    - name: 'Assert required variables are defined.'
+      assert:
+        that: 
+          - hostgroup is defined
+          - exadata_type is defined and (exadata_type == 'exacs' or exadata_type == 'exacc')
+          - db_home_name is defined and db_base_version is defined
+        quiet: 'true'
+
+    - name: 'Create Database Home for ExaCS'
+      include_role:
+        name: 'database_home'

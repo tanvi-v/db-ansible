@@ -1,0 +1,14 @@
+# db home required variables
+db_home_name: 'Home1'
+db_base_version: '19.0.0.0'
+
+# vm_cluster
+exadata_type: 'exacs'       # exacs or exacc
+compartment_id: 'ocid1.compartment.'
+vm_cluster_id: 'ocid1.cloudvmcluster..'
+
+
+
+      
+
+

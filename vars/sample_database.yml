@@ -1,0 +1,13 @@
+# database
+cdb_name: 'DB1'
+
+# database home
+db_home_name: 'Home1'    # db_home_name or db_home_id
+compartment_id: 'ocid1.compartment.oc1..'
+vm_cluster_id: 'ocid1.cloudvmcluster.oc1.'
+exadata_type: 'exacs'       # exacs or exacc
+
+#automatic backup details (for ExaCS)
+auto_backup_window: 'SLOT_TWO'    # optional: also set in defaults
+recovery_window_in_days: '30'     # optional: also set in defaults
+

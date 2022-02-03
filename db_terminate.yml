@@ -1,0 +1,13 @@
+
+# Playbook db_teardown.yml terminates a database based on the name or OCID passed in through the variable file. 
+
+- name: 'DB Teardown'
+  hosts: 'localhost'
+  
+  tasks:
+    
+    - name: 'Delete DB'
+      include_role:
+        name: 'database'
+        tasks_from: 'db_delete_database.yml'
+    

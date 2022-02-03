@@ -1,0 +1,20 @@
+
+# Identify VM Cluster where Database Home will be created
+
+- name: 'Discover VM Cluster for DB Home {{ db_home_name | lower }}'
+  when: vm_cluster_id is not defined
+  include_role:
+    name: 'exadata'
+    tasks_from: '{{ exadata_type }}_vm_cluster_discovery.yml'
+
+- name: 'Assert that vm_cluster_id is defined'
+  assert:
+    that: vm_cluster_id is defined and compartment_id is defined
+    quiet: 'true'
+
+# Create Database Home
+
+- name: 'Create DB Home' 
+  include_tasks: 'db_home_create.yml'
+    
+    

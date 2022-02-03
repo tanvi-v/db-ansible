@@ -1,0 +1,10 @@
+
+- name: 'Database Backup'
+  hosts: 'localhost'
+    
+  tasks:
+
+    - name: 'Delete Automatic PDB'
+      include_role:
+        name: 'database'
+        tasks_from: 'db_backup_standalone.yml'

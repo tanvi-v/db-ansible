@@ -1,0 +1,19 @@
+
+# Find Database ID to terminate correct database
+
+- name: 'Get OCID for {{ cdb_name | lower }} DB'
+  when: database_id is not defined
+  include_tasks: 'db_discovery.yml'
+
+# Terminate Database
+
+- name: 'Delete database with name {{ cdb_name | lower }}'
+  when: database_id is defined
+  oci_database_database:
+    database_id: '{{ database_id }}'
+    state: 'absent'
+  register: 'db_deletion_result'
+- name: 'DB Deletion Output'
+  debug:
+    msg: '{{ db_deletion_result }}'
+  

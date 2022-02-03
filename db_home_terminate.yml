@@ -1,0 +1,14 @@
+
+# Playbook db_teardown.yml terminates a db home based on the name or OCID passed in through the variable file. 
+# Assumes all databases running on the home have already been terminated.
+
+- name: 'DB Home Teardown'
+  hosts: 'localhost'
+  
+  tasks:
+
+    - name: 'Delete DB Home'
+      include_role:
+        name: 'database_home'
+        tasks_from: 'db_home_delete.yml'
+    

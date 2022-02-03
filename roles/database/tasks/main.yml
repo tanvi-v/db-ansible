@@ -1,0 +1,37 @@
+
+# Identify Database Home where Database will be created
+
+- name: 'Discover DB Home for Database {{ cdb_name | lower }}'
+  when: db_home_id is not defined
+  include_role:
+    name: 'database_home'
+    tasks_from: 'db_home_discovery.yml'
+
+- name: 'Assert that db_home_id is defined'
+  assert: { that: db_home_id is defined }
+
+# Create Database
+
+- name: 'Create Database'
+  include_tasks: 'db_create_database.yml'
+
+- block:
+  - name: 'Delete Automatic PDB'
+    include_role:
+      name: 'pdb'
+      tasks_from: 'pdb_delete.yml'
+    vars:
+      pdb_name: '{{ default_pdb_name }}'
+  delegate_to: '{{ hostgroup }}'
+
+# Database Set-Up
+- block:
+  - name: 'Database Config'
+    include_tasks: 'db_alter_system_config.yml'
+  delegate_to: '{{ hostgroup }}'
+
+# Enable Automatic Backups
+
+- name: 'Set Database Automatic Backup'
+  when: exadata_type == 'exacs'
+  include_tasks: 'db_set_automatic_backup.yml'

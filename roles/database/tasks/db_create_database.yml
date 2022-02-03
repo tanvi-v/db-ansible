@@ -1,0 +1,44 @@
+# Check for existing database with provided database name 
+
+- name: 'Check for existing database with name {{ cdb_name | lower }}'
+  include_tasks: 'db_discovery.yml'
+- name: 'Assert that database {{ cdb_name | lower }} does not exist'
+  assert:
+    that: 
+      - database_id is not defined
+
+# Creates new database. 
+
+- set_fact:
+    # db_unique_name: '{{ cdb_name | lower }}_{{ vm_cluster_name | lower }}'
+    db_unique_name: '{{ cdb_name | lower }}'
+
+- name: 'Create {{ cdb_name | lower }} database'
+  oci_database_database:
+    compartment_id: '{{ compartment_id }}'
+    database:
+      admin_password: '{{ db_admin_password }}'
+      character_set: '{{ character_set }}'
+      database_software_image_id: '{{ database_software_image_id }}'
+      db_name: '{{ cdb_name | lower }}'
+      db_unique_name: '{{ db_unique_name }}'
+      db_workload: '{{ db_workload }}'
+      defined_tags: '{{ db_defined_tags }}'
+      freeform_tags: '{{ db_freeform_tags }}'
+      ncharacter_set: '{{ ncharacter_set }}'
+      pdb_name: '{{ default_pdb_name }}'
+    db_home_id: '{{ db_home_id }}'
+    db_version: '{{ db_base_version }}' 
+    key_by: ['db_home_id', 'db_name']
+    kms_key_id: '{{ kms_key_id }}' 
+    kms_key_version_id: '{{ kms_key_version_id }}' 
+    source: '{{ db_source }}'
+  register: 'db_creation_result'
+- debug:
+    msg: '{{ db_creation_result }}'
+- set_fact:
+    database_id: '{{ db_creation_result.database.id }}'
+
+# Developers Note: Can set unique name to include vm cluster name, if follows 
+# naming conventions. Not setting automatic backups by default since can use a lot of storage.
+

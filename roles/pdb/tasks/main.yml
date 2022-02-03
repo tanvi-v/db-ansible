@@ -1,0 +1,8 @@
+
+# Playbook add_pdb.yml adds a PDB to the designated database.
+
+- name: Create PDB
+  include_tasks: pdb_create.yml
+
+- name: PDB Info
+  include_tasks: pdb_info.yml

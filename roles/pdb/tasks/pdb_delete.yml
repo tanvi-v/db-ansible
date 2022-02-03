@@ -1,0 +1,11 @@
+
+# DBCLI Method
+
+- name: 'delete pdb {{ pdb_name | lower }}' 
+  shell:  |
+    dbaascli pdb delete --pdb_name {{ pdb_name | lower }} --dbname {{ cdb_name | lower }}
+  become: 'true'
+  become_user: 'oracle'
+  register: 'pdb_delete_result'
+- debug:
+    msg: '{{ pdb_delete_result }}'

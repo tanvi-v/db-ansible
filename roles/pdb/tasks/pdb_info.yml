@@ -1,0 +1,9 @@
+
+- name: 'Available PDBs'
+  shell:  |
+    dbaascli pdb info --dbname {{ cdb_name | lower }}
+  become: 'true'
+  become_user: 'oracle'
+  register: 'pdb_info_result'
+- debug:
+    msg: '{{ pdb_info_result }}'

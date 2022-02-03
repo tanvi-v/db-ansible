@@ -1,0 +1,43 @@
+
+- name: 'Copy Database Config Script to Host'
+  become: 'true'
+  become_user: 'oracle'
+  become_method: 'sudo'
+  copy:
+    src: 'alter_system_config.sql'
+    dest: '{{ script_path }}'
+    owner: 'oracle'
+    group: 'oinstall'
+    mode: 'u=rwx,g=rwx,o=rx'
+  register: 'copy_script_result'
+- debug:
+    msg: '{{ copy_script_result }}'
+
+
+- name: Execute SQL Script
+  shell: |
+    source {{ db_env_path }}/{{ cdb_name | lower }}.env
+    echo $ORACLE_HOME
+    echo $ORACLE_SID
+    $ORACLE_HOME/bin/sqlplus / as sysdba @{{ script_path }}/alter_system_config.sql
+  become: yes
+  become_user: oracle
+  become_method: sudo
+  register: sql_script_result
+- debug:
+    msg: '{{ sql_script_result }}'
+    
+- set_fact:
+    sql_errors: '{{ sql_script_result | regex_search("ERROR", multiline=True) }}'
+- name: 'Assert that SQL Script did not have any errors.'
+  assert: { that: sql_errors == ''}
+
+
+- name: 'Bounce Database'
+  shell:  |
+    dbaascli database bounce --dbname {{ cdb_name | lower }}
+  become: 'true'
+  become_user: 'oracle'
+  register: 'database_bounce_result'
+- debug:
+    msg: '{{ database_bounce_result }}'

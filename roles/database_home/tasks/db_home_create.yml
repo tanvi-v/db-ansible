@@ -1,0 +1,26 @@
+
+# Check for existing database home with provided db home name 
+
+- name: 'Check for existing db_home with name {{ db_home_name | lower }}'
+  include_tasks: 'db_home_discovery.yml'
+- name: 'Assert that database home {{ db_home_name | lower }} does not exist'
+  assert: { that: db_home_id is not defined }
+
+# Create new database home. Default Source is VM_CLUSTER_NEW 
+
+- name: 'Create db home with name {{ db_home_name | lower }}'
+  oci_database_db_home:
+    compartment_id: '{{ compartment_id }}'
+    database_software_image_id: '{{ database_software_image_id }}'
+    db_version: '{{ db_base_version }}'
+    display_name: '{{ db_home_name | lower }}'
+    key_by: ['vm_cluster_id', 'display_name']
+    kms_key_id: '{{ kms_key_id }}'
+    kms_key_version_id: '{{ kms_key_version_id }}'
+    source: '{{ db_home_source }}'
+    vm_cluster_id: '{{ vm_cluster_id }}'
+  register: 'db_home_create_result'
+- debug:
+    msg: '{{ db_home_create_result }}'
+- set_fact:
+    db_home_id: '{{ db_home_create_result.db_home.id }}'

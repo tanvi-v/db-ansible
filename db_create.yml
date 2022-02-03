@@ -1,0 +1,17 @@
+
+- name: 'Database Create'
+  hosts: 'localhost'
+    
+  tasks:
+
+    - name: 'Assert required variables are defined.'
+      assert:
+        that: 
+          - hostgroup is defined
+          - exadata_type is defined and (exadata_type == 'exacs' or exadata_type == 'exacc')
+          - cdb_name is defined and db_home_name is defined and db_admin_password is defined
+        quiet: 'true'
+
+    - name: 'Create Database for ExaCS'
+      include_role:
+        name: 'database'

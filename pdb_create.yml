@@ -1,0 +1,9 @@
+
+- name: 'PDB Create'
+  hosts: '{{ hostgroup }}'
+  
+  tasks:
+    
+    - name: 'Create PDB'
+      include_role:
+        name: 'pdb'
